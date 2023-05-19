@@ -1,0 +1,49 @@
+﻿<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
+mapper代理开发时将namespace指定为mapper接口的全限定名  
+ -->
+<mapper namespace="com.chengxusheji.mapper.SpaceMapper"> 
+<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
+mapper.xml以statement为单位管理sql语句  
+ -->
+	<!-- 添加场地记录 -->
+	<insert id="addSpace" parameterType="space">
+		insert into t_space(spaceNo,spaceTypeObj,spacePhoto,spacePrice,floorNum,spaceState,spaceDesc) values 
+		(#{spaceNo},#{spaceTypeObj.spaceTypeId},#{spacePhoto},#{spacePrice},#{floorNum},#{spaceState},#{spaceDesc})
+	</insert>
+
+	<!-- 按照查询条件分页查询场地记录 -->
+	<select id="querySpace" resultMap="spaceMap" >
+		select t_space.* from t_space,t_spaceType ${where} and t_space.spaceTypeObj = t_spaceType.spaceTypeId limit #{startIndex},#{pageSize}
+	</select>
+	<resultMap id="spaceMap" type="space">
+        <id property="spaceNo" column="spaceNo" />
+        <association property="spaceTypeObj" column="spaceTypeObj" select="com.chengxusheji.mapper.SpaceTypeMapper.getSpaceType" />
+    </resultMap>
+
+    <!-- 按照查询条件查询所有场地记录 -->
+	<select id="querySpaceList" resultMap="spaceMap" >
+		select t_space.* from t_space,t_spaceType ${where} and t_space.spaceTypeObj = t_spaceType.spaceTypeId
+	</select>
+
+    <!-- 按照查询条件的场地记录数 -->
+	<select id="querySpaceCount" resultType="int">
+		select count(*) from t_space,t_spaceType ${where} and t_space.spaceTypeObj = t_spaceType.spaceTypeId
+	</select>
+
+	<!-- 根据主键查询某个场地记录 -->
+	<select id="getSpace" parameterType="string" resultMap="spaceMap">
+		select * from t_space where t_space.spaceNo = #{spaceNo}
+	</select>
+
+	<!-- 更新场地记录 -->
+	<update id="updateSpace" parameterType="space">
+		update t_space set spaceTypeObj=#{spaceTypeObj.spaceTypeId},spacePhoto=#{spacePhoto},spacePrice=#{spacePrice},floorNum=#{floorNum},spaceState=#{spaceState},spaceDesc=#{spaceDesc} where spaceNo = #{spaceNo}
+	</update>
+
+	<!-- 删除场地记录 -->
+	<delete id="deleteSpace" parameterType="string">
+		delete from t_space where spaceNo=#{spaceNo}
+	</delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
+mapper代理开发时将namespace指定为mapper接口的全限定名  
+ -->
+<mapper namespace="com.chengxusheji.mapper.SpaceTypeMapper"> 
+<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
+mapper.xml以statement为单位管理sql语句  
+ -->
+	<!-- 添加场地类型记录 -->
+	<insert id="addSpaceType" parameterType="spaceType">
+		insert into t_spaceType(spaceTypeName,price) values 
+		(#{spaceTypeName},#{price})
+	</insert>
+
+	<!-- 按照查询条件分页查询场地类型记录 -->
+	<select id="querySpaceType" resultMap="spaceTypeMap" >
+		select t_spaceType.* from t_spaceType ${where} limit #{startIndex},#{pageSize}
+	</select>
+	<resultMap id="spaceTypeMap" type="spaceType">
+        <id property="spaceTypeId" column="spaceTypeId" />
+    </resultMap>
+
+    <!-- 按照查询条件查询所有场地类型记录 -->
+	<select id="querySpaceTypeList" resultMap="spaceTypeMap" >
+		select t_spaceType.* from t_spaceType ${where}
+	</select>
+
+    <!-- 按照查询条件的场地类型记录数 -->
+	<select id="querySpaceTypeCount" resultType="int">
+		select count(*) from t_spaceType ${where}
+	</select>
+
+	<!-- 根据主键查询某个场地类型记录 -->
+	<select id="getSpaceType" parameterType="int" resultMap="spaceTypeMap">
+		select * from t_spaceType where t_spaceType.spaceTypeId = #{spaceTypeId}
+	</select>
+
+	<!-- 更新场地类型记录 -->
+	<update id="updateSpaceType" parameterType="spaceType">
+		update t_spaceType set spaceTypeName=#{spaceTypeName},price=#{price} where spaceTypeId = #{spaceTypeId}
+	</update>
+
+	<!-- 删除场地类型记录 -->
+	<delete id="deleteSpaceType" parameterType="int">
+		delete from t_spaceType where spaceTypeId=#{spaceTypeId}
+	</delete>
+
+</mapper>
